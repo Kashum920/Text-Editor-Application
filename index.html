@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Text Editor | Assignment-I</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+    <!-- Stylesheet -->
+    <style>
+        * 
+        {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background-color: #ea077c;
+        }
+
+        .container {
+            background-color: #ffffff;
+            width: 90vmin;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            top: 50%;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(7, 20, 35, 0.4);
+        }
+
+        .options {
+            width: 100%;
+            height: 50px;
+            background: #1e2669;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            height: 28px;
+            width: 28px;
+            display: grid;
+            place-items: center;
+            border-radius: 3px;
+            border: none;
+            background-color:transparent;
+            outline: none;
+            color: #e3e5ed;
+            font-size:17px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            width: 25px;
+            height: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border-radius: 15px;
+            box-shadow: 0 0 0 2px #ffffff, 0 0 0 3px #020929;
+        }
+
+        input[type="color"]::-moz-color-swatch {
+            border-radius: 15px;
+            box-shadow: 0 0 0 2px #ffffff, 0 0 0 3px #020929;
+        }
+
+        #text-input {
+            margin-top: 10px;
+            border: 3px solid #dddddd;
+            padding: 20px;
+            margin: 20px;
+            height: 50vh;
+        }
+
+        .active {
+            background-color: #e0e9ff;
+        }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+      <div class="options">
+        <!-- Text Format -->
+        <button id="bold" class="option-button format">
+          <i class="fa-solid fa-bold"></i>
+        </button>
+        <button id="underline" class="option-button format">
+          <i class="fa-solid fa-underline"></i>
+        </button>
+        <button id="italic" class="option-button format">
+          <i class="fa-solid fa-italic"></i>
+        </button>
+        
+        <!-- Color -->
+        <div class="input-wrapper">
+          <button class="option-button">
+            <i class="fa-solid fa-a"></i>
+            <input type="color" id="foreColor" class="adv-option-button" />
+          </button>      
+        </div>
+
+        <!-- Alignment -->
+        <button id="justifyLeft" class="option-button align">
+          <i class="fa-solid fa-align-left"></i>
+        </button>
+        <button id="justifyCenter" class="option-button align">
+          <i class="fa-solid fa-align-center"></i>
+        </button>
+        <button id="justifyRight" class="option-button align">
+          <i class="fa-solid fa-align-right"></i>
+        </button>
+        <button id="justifyFull" class="option-button align">
+          <i class="fa-solid fa-align-justify"></i>
+        </button>
+
+        <!-- Undo/Redo -->
+        <button id="undo" class="option-button">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+        <button id="redo" class="option-button">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>     
+      </div>
+      <div id="text-input" contenteditable="true"></div>
+    </div>
+
+
+    <!--Script-->
+    <script>
+        let optionsButtons = document.querySelectorAll(".option-button");
+        let advancedOptionButton = document.querySelectorAll(".adv-option-button");
+        let writingArea = document.getElementById("text-input");
+        let alignButtons = document.querySelectorAll(".align");
+        let formatButtons = document.querySelectorAll(".format");
+
+        //main logic
+        const modifyText = (command, defaultUi, value) => {
+          document.execCommand(command, defaultUi, value);
+        };
+
+        optionsButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            modifyText(button.id, false, null);
+          });
+        });
+
+        //options that require value parameter
+        advancedOptionButton.forEach((button) => {
+          button.addEventListener("change", () => {
+            modifyText(button.id, false, button.value);
+          });
+        });
+
+        //Highlight clicked button
+        const highlighter = (className, needsRemoval) => {
+          className.forEach((button) => {
+            button.addEventListener("click", () => {
+              if (needsRemoval) {
+                let alreadyActive = false;
+
+                if (button.classList.contains("active")) {
+                  alreadyActive = true;
+                }
+
+                highlighterRemover(className);
+                if (!alreadyActive) {
+                  button.classList.add("active");
+                }
+              } else {
+                button.classList.toggle("active");
+              }
+            });
+          });
+        };
+
+        const highlighterRemover = (className) => {
+          className.forEach((button) => {
+            button.classList.remove("active");
+          });
+        };
+
+        window.onload = initializer();
+
+    </script>
+  </body>
+</html>
